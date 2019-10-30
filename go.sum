@@ -1,0 +1,4 @@
+github.com/seehuhn/mt19937 v0.0.0-20191016190622-fcb3d07df596 h1:A+uE+TMkj/zubdcBeHDn9S9xHNA/ceO4MUosi/1iq24=
+github.com/seehuhn/mt19937 v0.0.0-20191016190622-fcb3d07df596/go.mod h1:w+IAy13Luqfsp+plFpT1RiqauADylJKmpkrWFwpjbsc=
+github.com/shogo82148/go-mecab v0.0.2 h1:jg1TW6cOEX8/KTDDBgQfEANhDeu0NGrvp176V9EBarA=
+github.com/shogo82148/go-mecab v0.0.2/go.mod h1:th7Y+rNiE59/aSfflCfbbAoQe5T2RuwDMvRq9JwahR4=
