@@ -1,7 +1,7 @@
 package markov
 
 import (
-	crand "crypto/rand"
+	crypto "crypto/rand"
 	"github.com/seehuhn/mt19937"
 	"github.com/shogo82148/go-mecab"
 	"log"
@@ -70,7 +70,7 @@ func _getTriplet(target string, markov [][]string) [][]string {
 }
 
 func _makeChain(markov [][]string, result []string) []string {
-	seed, _ := crand.Int(crand.Reader, big.NewInt(math.MaxInt64))
+	seed, _ := crypto.Int(crypto.Reader, big.NewInt(math.MaxInt64))
 	rng := rand.New(mt19937.New())
 	rng.Seed(seed.Int64())
 
@@ -82,17 +82,34 @@ func _makeChain(markov [][]string, result []string) []string {
 	return result
 }
 
-func generateSentence(chain []string, markovTable [][]string) string{
-	var sentence []string
+func GenerateSentence(markovTable [][]string) string{
+	var sentences []string
 	var block [][]string
 	firstTriplet := _getTriplet(BEGIN, markovTable)
-	sentence = _makeChain(firstTriplet, sentence)
-	for sentence[len(sentence)-1] != END {
-		block = _getTriplet(sentence[len(sentence)-1], markovTable)
+	sentences = _makeChain(firstTriplet, sentences)
+	count := 0
+	for sentences[len(sentences)-1] != END {
+		block = _getTriplet(sentences[len(sentences)-1], markovTable)
 		if len(block) <= 0 {
 			break
 		}
-		sentence = _makeChain(firstTriplet, sentence)
+		sentences = _makeChain(block, sentences)
+		count++
+		if count > 200 {
+			break
+		}
 	}
-	return strings.Join(sentence, "")
+	sentence := joinSentences(sentences)
+	return sentence
+}
+
+func joinSentences(sentences []string) string{
+	var result string
+	for _, s := range sentences {
+		if s == END {
+			continue
+		}
+		result += s
+	}
+	return result
 }
