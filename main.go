@@ -14,18 +14,24 @@ func loadEnv() {
 	}
 }
 
-func main() {
-	loadEnv()
-	api := twitter.InitTwitterApi()
-	baseBlock := twitter.RetrieveOwnTweets("Sw_Saturn", api)
+func generateTweet(block []string) string {
 	var markovBlocks [][]string
-
-	for _, s := range baseBlock {
+	for _, s := range block {
 		_data := markov.ExtractWord(s)
 		elems := markov.MakeMarkovBlocks(_data)
 		markovBlocks = append(markovBlocks, elems...)
 	}
+	s := markov.GenerateSentence(markovBlocks)
+	return s
+}
 
-	elemsSet := markov.GenerateSentence(markovBlocks)
-	twitter.PostTweet(elemsSet, api)
+func main() {
+	loadEnv()
+	api := twitter.InitTwitterApi()
+	baseBlock := twitter.RetrieveOwnTweets("Sw_Saturn", api)
+	result := generateTweet(baseBlock)
+	for len(result) > 200 {
+		result = generateTweet(baseBlock)
+	}
+	twitter.PostTweet(result, api)
 }
