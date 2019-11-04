@@ -25,6 +25,7 @@ stages:
       inputs:
         secureFile: '.env'
     - script: |
+        cp $(env.secureFilePath) ./.env
         docker build -f **/Dockerfile -t swsaturn/$(imageName) .
         docker login -u swsaturn -p $(DOCKER_HUB_PWD)
         docker push swsaturn/$(imageName)
