@@ -6,22 +6,27 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
-
 variables:
 - group: secret
 - name: imageName
   value: 'dmz_ai.go:$(build.buildId)'
 
-steps:
-- task: DownloadSecureFile@1
-  name: env
-  displayName: 'Download .env File'
-  inputs:
-    secureFile: '.env'
-- script: |
-    docker build -f **/Dockerfile -t swsaturn/$(imageName) .
-    docker login -u swsaturn -p $(DOCKER_HUB_PWD)
-    docker push swsaturn/$(imageName)
-  displayName: 'docker build and push'
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: DownloadSecureFile@1
+      name: env
+      displayName: 'Download .env File'
+      inputs:
+        secureFile: '.env'
+    - script: |
+        docker build -f **/Dockerfile -t swsaturn/$(imageName) .
+        docker login -u swsaturn -p $(DOCKER_HUB_PWD)
+        docker push swsaturn/$(imageName)
+      displayName: 'docker build and push'
