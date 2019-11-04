@@ -26,7 +26,7 @@ func DivideText(text string) string {
 	return result
 }
 
-func MakeMarkovBlocks(analyzedText []string) [][]string {
+func _makeMarkovBlocks(analyzedText []string) [][]string {
 	var markovBlock [][]string
 	if len(analyzedText) < 3 {
 		return markovBlock
@@ -43,7 +43,7 @@ func MakeMarkovBlocks(analyzedText []string) [][]string {
 	return markovBlock
 }
 
-func ExtractWord(text string) []string {
+func _extractWord(text string) []string {
 	var words []string
 	m, err := mecab.New(map[string]string{"dicdir": os.Getenv("MECAB_DIC_PATH")})
 	if err != nil {
@@ -86,7 +86,7 @@ func _makeChain(markov [][]string, result []string) []string {
 	return result
 }
 
-func GenerateSentence(markovTable [][]string) string {
+func _generateSentence(markovTable [][]string) string {
 	var sentences []string
 	var block [][]string
 	firstTriplet := _getTriplet(BEGIN, markovTable)
@@ -103,11 +103,11 @@ func GenerateSentence(markovTable [][]string) string {
 			break
 		}
 	}
-	sentence := joinSentences(sentences)
+	sentence := _joinSentences(sentences)
 	return sentence
 }
 
-func joinSentences(sentences []string) string {
+func _joinSentences(sentences []string) string {
 	var result string
 	for _, s := range sentences {
 		if s == END {
@@ -116,4 +116,18 @@ func joinSentences(sentences []string) string {
 		result += s
 	}
 	return result
+}
+
+func GenerateTweet(block []string) string {
+	var markovBlocks [][]string
+	for _, s := range block {
+		_data := _extractWord(s)
+		elems := _makeMarkovBlocks(_data)
+		markovBlocks = append(markovBlocks, elems...)
+	}
+	s := _generateSentence(markovBlocks)
+	for len(s) > 200 {
+		s = _generateSentence(markovBlocks)
+	}
+	return s
 }
