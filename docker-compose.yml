@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: ramenbot
+    image: swsaturn/dmz_ai.go
+    container_name: "dmz_ai.go"
+    tty: true
+    env_file:
+      - .env
