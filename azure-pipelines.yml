@@ -9,7 +9,7 @@ trigger:
 variables:
 - group: secret
 - name: imageName
-  value: 'dmz_ai.go:$(build.buildId)'
+  value: 'dmz_ai.go:latest'
 
 stages:
 - stage: Build
