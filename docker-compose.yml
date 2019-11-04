@@ -9,5 +9,6 @@ services:
     image: swsaturn/dmz_ai.go
     container_name: "dmz_ai.go"
     tty: true
+    command: go run main.go
     env_file:
       - .env
