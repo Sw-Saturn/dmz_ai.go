@@ -1,53 +1,30 @@
-FROM golang:alpine
+FROM golang:1.13.3-alpine
 
 RUN apk add --update --no-cache build-base
+ENV build_deps 'git curl bash openssl'
+ENV MECAB_DIC_PATH "/usr/lib/mecab/dic/mecab-ipadic-neologd"
+ENV MECAB_WORK=/tmp/mecab
+ENV NEOLOGD_WORK=/tmp/neologd
 
-ENV MECAB_VERSION 0.996
-ENV IPADIC_VERSION 2.7.0-20070801
-ENV mecab_url https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE
-ENV ipadic_url https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM
-ENV build_deps 'curl git bash file sudo openssh'
-ENV dependencies 'openssl'
+RUN set -x && apk add --no-cache ${build_deps} && mkdir -p ${MECAB_DIC_PATH}
 
-RUN apk add --update --no-cache ${build_deps} \
-  # Install dependencies
-  && apk add --update --no-cache ${dependencies} \
-  # Install MeCab
-  && curl -SL -o mecab-${MECAB_VERSION}.tar.gz ${mecab_url} \
-  && tar zxf mecab-${MECAB_VERSION}.tar.gz \
-  && cd mecab-${MECAB_VERSION} \
-  && ./configure --enable-utf8-only --with-charset=utf8 \
-  && make \
-  && make install \
-  && cd \
-  # Install IPA dic
-  && curl -SL -o mecab-ipadic-${IPADIC_VERSION}.tar.gz ${ipadic_url} \
-  && tar zxf mecab-ipadic-${IPADIC_VERSION}.tar.gz \
-  && cd mecab-ipadic-${IPADIC_VERSION} \
-  && ./configure --with-charset=utf8 \
-  && make \
-  && make install \
-  && cd \
-  # Install Neologd
-  && git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git \
-  && mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y \
-  # Clean up
-  && apk del ${build_deps} \
-  && rm -rf \
-    mecab-${MECAB_VERSION}* \
-    mecab-${IPADIC_VERSION}* \
-    mecab-ipadic-neologd
+# Install MeCab
+WORKDIR ${MECAB_WORK}
+RUN git clone https://github.com/taku910/mecab.git ${MECAB_WORK} \
+  && cd ./mecab \
+  && ./configure --enable-utf8-only --with-charset=utf8 && make && make install
 
-WORKDIR /go/src
-COPY go.mod .
-COPY go.sum .
+# Install Neologd
+WORKDIR ${NEOLOGD_WORK}
+RUN git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git ${NEOLOGD_WORK} \
+  && ${NEOLOGD_WORK}/bin/install-mecab-ipadic-neologd -n -y -p ${MECAB_DIC_PATH}
 
-RUN go mod download
+WORKDIR /go/src/github.com/Sw-Saturn/dmz_ai.go
+RUN apk del --purge ${build_deps} \
+  && rm -rf ${MECAB_WORK} && rm -rf ${NEOLOGD_WORK}
 COPY . .
 
-ENV CGO_ENABLED=1
-ENV GO111MODULE on
 ENV CGO_CFLAGS "-I/usr/include"
 ENV CGO_LDFLAGS "-L/usr/lib -lmecab -lstdc++"
-ENV MECAB_DIC_PATH "/usr/local/lib/mecab/dic/mecab-ipadic-neologd"
-RUN ["go", "run", "main.go"]
+ENV CGO_ENABLED 1
+RUN ["go","run","main.go"]
