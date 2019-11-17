@@ -45,35 +45,4 @@ func PostTweet(text string, api *anaconda.TwitterApi) {
 		log.Fatal(err)
 	}
 	fmt.Println(tweet.FullText)
-
-}
-
-func EgoSearch(api *anaconda.TwitterApi) {
-	v := url.Values{}
-	v.Set("include_rts", "false")
-	v.Set("include_entities", "0")
-	v.Set("exclude_replies", "1")
-	v.Set("filter", "follows")
-	v.Set("lang", "ja")
-	searchResult, _ := api.GetSearch(`"dmz_ai" OR "でみai" OR @a1b1c9xbvs -from:dmz_ai`, v)
-	fav, err := api.GetFavorites(nil)
-	var favorited bool
-	for _, tweet := range searchResult.Statuses {
-		if err != nil {
-			log.Fatal(err)
-		}
-		for _, f := range fav {
-			if tweet.Id == f.Id {
-				favorited = true
-			}
-		}
-		if !favorited {
-			fmt.Println(tweet.FullText)
-			_, err := api.Favorite(tweet.Id)
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-		favorited = false
-	}
 }
