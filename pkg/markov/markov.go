@@ -13,11 +13,13 @@ import (
 	"strings"
 )
 
+//BEGIN & END is used to detect beginning of sentence.
 const (
 	BEGIN = "__BEGIN_SENTENCE__"
 	END   = "__END_SENTENCE__"
 )
 
+//DivideText is remove URLs.
 func DivideText(text string) string {
 	rep := regexp.MustCompile(`https?://[\w/:%#\$&\?\(\)~\.=\+\-…]+`)
 	text = rep.ReplaceAllString(text, "")
@@ -118,6 +120,7 @@ func _joinSentences(sentences []string) string {
 	return result
 }
 
+//GenerateTweet is generate Sentence.
 func GenerateTweet(block []string) string {
 	var markovBlocks [][]string
 	for _, s := range block {

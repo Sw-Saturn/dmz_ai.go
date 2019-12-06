@@ -10,12 +10,14 @@ import (
 	"os"
 )
 
-func InitTwitterApi() *anaconda.TwitterApi {
+//InitTwitterAPI is initialize to using TwitterAPI.
+func InitTwitterAPI() *anaconda.TwitterApi {
 	anaconda.SetConsumerKey(os.Getenv("CONSUMER_KEY"))
 	anaconda.SetConsumerSecret(os.Getenv("CONSUMER_SECRET"))
 	return anaconda.NewTwitterApi(os.Getenv("ACCESS_TOKEN"), os.Getenv("ACCESS_TOKEN_SECRET"))
 }
 
+//RetrieveOwnTweets is Retrieve my tweets.
 func RetrieveOwnTweets(username string, api *anaconda.TwitterApi) []string {
 	tweetSources := []string{"TweetDeck", "Tweetbot", "Twitter"}
 	var result []string
@@ -39,6 +41,7 @@ func RetrieveOwnTweets(username string, api *anaconda.TwitterApi) []string {
 	return result
 }
 
+//PostTweet is posting tweet.
 func PostTweet(text string, api *anaconda.TwitterApi) {
 	tweet, err := api.PostTweet(text, nil)
 	if err != nil {
