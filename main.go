@@ -16,7 +16,7 @@ func loadEnv() {
 
 func main() {
 	loadEnv()
-	api := twitter.InitTwitterApi()
+	api := twitter.InitTwitterAPI()
 	baseBlock := twitter.RetrieveOwnTweets("Sw_Saturn", api)
 	result := markov.GenerateTweet(baseBlock)
 	twitter.PostTweet(result, api)
