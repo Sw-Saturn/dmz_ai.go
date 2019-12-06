@@ -6,7 +6,7 @@
 ![GitHub](https://img.shields.io/github/license/Sw-Saturn/dmz_ai.go?style=for-the-badge)
 
 ## Introduction
-自分のTwitterアカウントの発言をベースにして発言させるbot
+自分のTwitterアカウントの発言をベースにして発言させるbot
 
 Twitterの発言を形態素解析して，マルコフ連鎖によって言語化し，TwitterAPIから投稿する．
 
