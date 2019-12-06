@@ -1,5 +1,6 @@
 # dmz_ai.go
 [![Go Report Card](https://goreportcard.com/badge/github.com/Sw-Saturn/dmz_ai.go?style=flat-square)](https://goreportcard.com/report/github.com/Sw-Saturn/dmz_ai.go?style=flat-square)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/Sw-Saturn/dmz_ai.go?style=for-the-badge)
 ![Azure DevOps builds](https://img.shields.io/azure-devops/build/e8222/451756ff-78e6-4f82-96f2-cef50ad6fc84/3?label=Azure%20Pipelines&style=for-the-badge)
 ![Docker Pulls](https://img.shields.io/docker/pulls/swsaturn/dmz_ai.go?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/Sw-Saturn/dmz_ai.go?style=for-the-badge)
