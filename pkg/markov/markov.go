@@ -90,7 +90,6 @@ func _makeChain(markov [][]string, result []string) []string {
 	return result
 }
 
-
 func _makeHaikuChain(markov [][]string, result []string) []string {
 	seed, _ := crypto.Int(crypto.Reader, big.NewInt(math.MaxInt64))
 	rng := rand.New(mt19937.New())
@@ -151,8 +150,7 @@ func GenerateTweet(block []string) string {
 	return s
 }
 
-
-func _countOfSounds(haikuParts string) int{
+func _countOfSounds(haikuParts string) int {
 	t := tokenizer.New()
 	tokens := t.Tokenize(haikuParts)
 	count := 0
@@ -168,31 +166,29 @@ func _countOfSounds(haikuParts string) int{
 	return count
 }
 
-
 func _getHaikuTriplet(markov [][]string) [][]string {
 	var result [][]string
 	for _, s := range markov {
-			result = append(result, s)
+		result = append(result, s)
 	}
 	return result
 }
-
 
 func _generateHaiku(markovTable [][]string) string {
 	var sentences []string
 	var haiku []string
 	var sounds int
-	for i := 0; i<=3; i++ {
+	for i := 0; i <= 3; i++ {
 		sentences = make([]string, 5)
 		if i == 1 {
 			firstTriplet := _getHaikuTriplet(markovTable)
 			sentences = _makeHaikuChain(firstTriplet, sentences)
 			sounds = 5
-		} else if i == 2{
+		} else if i == 2 {
 			firstTriplet := _getTriplet(BEGIN, markovTable)
 			sentences = _makeHaikuChain(firstTriplet, sentences)
 			sounds = 7
-		} else if i == 3{
+		} else if i == 3 {
 			firstTriplet := _getTriplet(BEGIN, markovTable)
 			sentences = _makeHaikuChain(firstTriplet, sentences)
 			sounds = 5
@@ -217,7 +213,6 @@ func _generateHaiku(markovTable [][]string) string {
 	sentence := "ここで一句: " + _joinSentences(haiku)
 	return sentence
 }
-
 
 //GenerateHaiku is generate a Haiku.
 func GenerateHaiku(block []string) string {
