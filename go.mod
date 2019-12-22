@@ -9,7 +9,8 @@ require (
 	github.com/dustin/go-jsonpointer v0.0.0-20160814072949-ba0abeacc3dc // indirect
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
 	github.com/garyburd/go-oauth v0.0.0-20180319155456-bca2e7f09a17 // indirect
-	github.com/joho/godotenv v1.3.0 // indirect
+	github.com/ikawaha/kagome.ipadic v1.1.2
+	github.com/joho/godotenv v1.3.0
 	github.com/seehuhn/mt19937 v0.0.0-20191016190622-fcb3d07df596
 	github.com/shogo82148/go-mecab v0.0.2
 	golang.org/x/net v0.0.0-20191101175033-0deb6923b6d9 // indirect
