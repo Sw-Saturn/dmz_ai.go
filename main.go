@@ -20,4 +20,6 @@ func main() {
 	baseBlock := twitter.RetrieveOwnTweets("Sw_Saturn", api)
 	result := markov.GenerateTweet(baseBlock)
 	twitter.PostTweet(result, api)
+	haiku := markov.GenerateHaiku(baseBlock)
+	twitter.PostTweet(haiku, api)
 }

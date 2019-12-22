@@ -2,6 +2,7 @@ package markov
 
 import (
 	crypto "crypto/rand"
+	"github.com/ikawaha/kagome.ipadic/tokenizer"
 	"github.com/seehuhn/mt19937"
 	"github.com/shogo82148/go-mecab"
 	"log"
@@ -11,6 +12,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 //BEGIN & END is used to detect beginning of sentence.
@@ -88,6 +90,20 @@ func _makeChain(markov [][]string, result []string) []string {
 	return result
 }
 
+
+func _makeHaikuChain(markov [][]string, result []string) []string {
+	seed, _ := crypto.Int(crypto.Reader, big.NewInt(math.MaxInt64))
+	rng := rand.New(mt19937.New())
+	rng.Seed(seed.Int64())
+
+	for i, word := range markov[rng.Intn(len(markov)-1)] {
+		if i != 0 {
+			result = append(result, word)
+		}
+	}
+	return result
+}
+
 func _generateSentence(markovTable [][]string) string {
 	var sentences []string
 	var block [][]string
@@ -131,6 +147,89 @@ func GenerateTweet(block []string) string {
 	s := _generateSentence(markovBlocks)
 	for len(s) > 200 {
 		s = _generateSentence(markovBlocks)
+	}
+	return s
+}
+
+
+func _countOfSounds(haikuParts string) int{
+	t := tokenizer.New()
+	tokens := t.Tokenize(haikuParts)
+	count := 0
+	for _, token := range tokens {
+		features := token.Features()
+		if token.Class == tokenizer.DUMMY {
+			continue
+		}
+		if len(features) >= 8 {
+			count += utf8.RuneCountInString(features[7])
+		}
+	}
+	return count
+}
+
+
+func _getHaikuTriplet(markov [][]string) [][]string {
+	var result [][]string
+	for _, s := range markov {
+			result = append(result, s)
+	}
+	return result
+}
+
+
+func _generateHaiku(markovTable [][]string) string {
+	var sentences []string
+	var haiku []string
+	var sounds int
+	for i := 0; i<=3; i++ {
+		sentences = make([]string, 5)
+		if i == 1 {
+			firstTriplet := _getHaikuTriplet(markovTable)
+			sentences = _makeHaikuChain(firstTriplet, sentences)
+			sounds = 5
+		} else if i == 2{
+			firstTriplet := _getTriplet(BEGIN, markovTable)
+			sentences = _makeHaikuChain(firstTriplet, sentences)
+			sounds = 7
+		} else if i == 3{
+			firstTriplet := _getTriplet(BEGIN, markovTable)
+			sentences = _makeHaikuChain(firstTriplet, sentences)
+			sounds = 5
+		}
+		parts := _joinSentences(sentences)
+		count := 0
+		for _countOfSounds(parts) != sounds {
+			firstTriplet := _getTriplet(BEGIN, markovTable)
+			sentences = _makeHaikuChain(firstTriplet, sentences)
+			parts = _joinSentences(sentences)
+			count++
+			if count > 200 {
+				if i == 2 {
+					parts = "なんもわからん"
+				} else {
+					parts = "最上川"
+				}
+			}
+		}
+		haiku = append(haiku, parts)
+	}
+	sentence := "ここで一句: " + _joinSentences(haiku)
+	return sentence
+}
+
+
+//GenerateHaiku is generate a Haiku.
+func GenerateHaiku(block []string) string {
+	var markovBlocks [][]string
+	for _, s := range block {
+		_data := _extractWord(s)
+		elems := _makeMarkovBlocks(_data)
+		markovBlocks = append(markovBlocks, elems...)
+	}
+	s := _generateHaiku(markovBlocks)
+	for len(s) == 17 {
+		s = _generateHaiku(markovBlocks)
 	}
 	return s
 }
