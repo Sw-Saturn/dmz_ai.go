@@ -21,5 +21,7 @@ func main() {
 	result := markov.GenerateTweet(baseBlock)
 	twitter.PostTweet(result, api)
 	haiku := markov.GenerateHaiku(baseBlock)
-	twitter.PostTweet(haiku, api)
+	if haiku != "ここで一句: 最上川なんもわからん最上川" {
+		twitter.PostTweet(haiku, api)
+	}
 }
