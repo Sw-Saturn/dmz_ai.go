@@ -20,8 +20,4 @@ func main() {
 	baseBlock := twitter.RetrieveOwnTweets("Sw_Saturn", api)
 	result := markov.GenerateTweet(baseBlock)
 	twitter.PostTweet(result, api)
-	haiku := markov.GenerateHaiku(baseBlock)
-	if haiku != "ここで一句: 最上川なんもわからん最上川" {
-		twitter.PostTweet(haiku, api)
-	}
 }
